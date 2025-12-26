@@ -1,68 +1,53 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
-const AttendanceTracker = () => {
-  // Initial student list
-  const [students, setStudents] = useState([
-    { id: 1, name: "Alice", present: false },
-    { id: 2, name: "Bob", present: false },
-    { id: 3, name: "Charlie", present: false },
-    { id: 4, name: "Diana", present: false },
-  ]);
+function TaskDashboard() {
+  const [tasks, setTasks] = useState([]);
+  const [newTask, setNewTask] = useState("");
 
-  // Toggle attendance
-  const toggleAttendance = (id) => {
-    setStudents(
-      students.map((student) =>
-        student.id === id ? { ...student, present: !student.present } : student
-      )
-    );
+  const addTask = () => {
+    if (newTask.trim() === "") return;
+
+    setTasks([...tasks, { id: Date.now(), text: newTask }]);
+    setNewTask("");
   };
 
-  // Count summary
-  const presentCount = students.filter((s) => s.present).length;
-  const absentCount = students.length - presentCount;
+  const removeTask = (id) => {
+    setTasks(tasks.filter((task) => task.id !== id));
+  };
 
   return (
-    <div style={{ fontFamily: "Arial", padding: "20px" }}>
-      <h2>📋 Attendance Tracker</h2>
-      <ul style={{ listStyle: "none", padding: 0 }}>
-        {students.map((student) => (
+    <div style={{ padding: "20px", maxWidth: "400px" }}>
+      <h2>📝 Task List Dashboard</h2>
+
+      <input
+        type="text"
+        placeholder="Enter a task"
+        value={newTask}
+        onChange={(e) => setNewTask(e.target.value)}
+        style={{ width: "70%", padding: "5px" }}
+      />
+
+      <button onClick={addTask} style={{ marginLeft: "10px" }}>
+        Add
+      </button>
+
+      <ul style={{ marginTop: "20px" }}>
+        {tasks.map((task) => (
           <li
-            key={student.id}
+            key={task.id}
             style={{
-              margin: "10px 0",
               display: "flex",
               justifyContent: "space-between",
-              alignItems: "center",
-              background: student.present ? "#d4edda" : "#f8d7da",
-              padding: "10px",
-              borderRadius: "5px",
+              marginBottom: "8px",
             }}
           >
-            <span>{student.name}</span>
-            <button
-              onClick={() => toggleAttendance(student.id)}
-              style={{
-                padding: "5px 10px",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-                background: student.present ? "#28a745" : "#dc3545",
-                color: "white",
-              }}
-            >
-              {student.present ? "Present ✅" : "Absent ❌"}
-            </button>
+            {task.text}
+            <button onClick={() => removeTask(task.id)}>❌</button>
           </li>
         ))}
       </ul>
-
-      <h3>Summary</h3>
-      <p>
-        ✅ Present: {presentCount} | ❌ Absent: {absentCount}
-      </p>
     </div>
   );
-};
+}
 
-export default AttendanceTracker;
+export default TaskDashboard;
